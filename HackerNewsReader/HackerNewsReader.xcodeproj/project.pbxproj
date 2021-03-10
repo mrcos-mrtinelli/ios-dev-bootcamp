@@ -22,6 +22,7 @@
 		8DAD132525F83D5A005F7FEA /* PostData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostData.swift; sourceTree = "<group>"; };
 		8DAD132B25F84E9C005F7FEA /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		8DAD132F25F88B22005F7FEA /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		8DAD133425F890BF005F7FEA /* HackerNewsReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HackerNewsReader.entitlements; sourceTree = "<group>"; };
 		8DBB657B25F587AE00C06048 /* HackerNewsReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HackerNewsReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DBB657E25F587AE00C06048 /* HackerNewsReaderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackerNewsReaderApp.swift; sourceTree = "<group>"; };
 		8DBB658025F587AE00C06048 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -79,6 +80,7 @@
 		8DBB657D25F587AE00C06048 /* HackerNewsReader */ = {
 			isa = PBXGroup;
 			children = (
+				8DAD133425F890BF005F7FEA /* HackerNewsReader.entitlements */,
 				8DAD132025F8394F005F7FEA /* Models */,
 				8DBB657E25F587AE00C06048 /* HackerNewsReaderApp.swift */,
 				8DAD132925F84E85005F7FEA /* Views */,
@@ -299,6 +301,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HackerNewsReader/HackerNewsReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HackerNewsReader/Preview Content\"";
 				DEVELOPMENT_TEAM = W59YFRW7LJ;
@@ -311,6 +314,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.mrcos.HackerNewsReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -321,6 +325,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HackerNewsReader/HackerNewsReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HackerNewsReader/Preview Content\"";
 				DEVELOPMENT_TEAM = W59YFRW7LJ;
@@ -333,6 +338,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.mrcos.HackerNewsReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
