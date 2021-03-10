@@ -23,20 +23,3 @@ struct DetailView_Previews: PreviewProvider {
     }
 }
 
-struct WebView: UIViewRepresentable {
-    typealias UIViewType = WKWebView
-
-    let urlString: String?
-
-    func makeUIView(context: Context) -> WKWebView {
-        return WKWebView()
-    }
-
-    func updateUIView(_ uiView: UIViewType, context: Context) {
-        if let safeString = urlString {
-            guard let url = URL(string: safeString) else { return }
-            let request = URLRequest(url: url)
-            uiView.load(request)
-        }
-    }
-}

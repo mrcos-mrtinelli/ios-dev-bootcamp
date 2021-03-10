@@ -10,6 +10,7 @@
 		8DAD132225F83971005F7FEA /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DAD132125F83971005F7FEA /* NetworkManager.swift */; };
 		8DAD132625F83D5A005F7FEA /* PostData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DAD132525F83D5A005F7FEA /* PostData.swift */; };
 		8DAD132C25F84E9C005F7FEA /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DAD132B25F84E9C005F7FEA /* DetailView.swift */; };
+		8DAD133025F88B22005F7FEA /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DAD132F25F88B22005F7FEA /* WebView.swift */; };
 		8DBB657F25F587AE00C06048 /* HackerNewsReaderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBB657E25F587AE00C06048 /* HackerNewsReaderApp.swift */; };
 		8DBB658125F587AE00C06048 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBB658025F587AE00C06048 /* ContentView.swift */; };
 		8DBB658325F587AF00C06048 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DBB658225F587AF00C06048 /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 		8DAD132125F83971005F7FEA /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		8DAD132525F83D5A005F7FEA /* PostData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostData.swift; sourceTree = "<group>"; };
 		8DAD132B25F84E9C005F7FEA /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		8DAD132F25F88B22005F7FEA /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		8DBB657B25F587AE00C06048 /* HackerNewsReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HackerNewsReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DBB657E25F587AE00C06048 /* HackerNewsReaderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackerNewsReaderApp.swift; sourceTree = "<group>"; };
 		8DBB658025F587AE00C06048 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 			children = (
 				8DBB658025F587AE00C06048 /* ContentView.swift */,
 				8DAD132B25F84E9C005F7FEA /* DetailView.swift */,
+				8DAD132F25F88B22005F7FEA /* WebView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -166,6 +169,7 @@
 				8DAD132225F83971005F7FEA /* NetworkManager.swift in Sources */,
 				8DAD132625F83D5A005F7FEA /* PostData.swift in Sources */,
 				8DBB658125F587AE00C06048 /* ContentView.swift in Sources */,
+				8DAD133025F88B22005F7FEA /* WebView.swift in Sources */,
 				8DAD132C25F84E9C005F7FEA /* DetailView.swift in Sources */,
 				8DBB657F25F587AE00C06048 /* HackerNewsReaderApp.swift in Sources */,
 			);

@@ -26,6 +26,8 @@ class NetworkManager: ObservableObject {
                     return
                 }
                 
+                print("response: \(response)")
+                
                 let decoder = JSONDecoder()
                 
                 do {
