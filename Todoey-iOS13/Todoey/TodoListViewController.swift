@@ -9,6 +9,7 @@
 import UIKit
 
 class TodoListViewController: UITableViewController {
+    let defaults = UserDefaults.standard
     
     var itemArray = ["Find cork", "Take it to a person", "Fetch when they throw it"]
 
@@ -17,6 +18,12 @@ class TodoListViewController: UITableViewController {
         
         let addNewItemButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
         addNewItemButton.tintColor = .black
+        
+        if let savedData = defaults.array(forKey: "todoItems") as? [String] {
+            itemArray = savedData
+        } else {
+            itemArray = [String]()
+        }
         
         navigationItem.rightBarButtonItem = addNewItemButton
     }
