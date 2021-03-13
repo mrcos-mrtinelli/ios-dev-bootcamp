@@ -11,19 +11,17 @@ import UIKit
 class TodoListViewController: UITableViewController {
     let defaults = UserDefaults.standard
     
-    var itemArray = ["Find cork", "Take it to a person", "Fetch when they throw it"]
+    var itemArray = [
+        ToDoItem(id: UUID().uuidString, checked: false, todo: "Find cork"),
+        ToDoItem(id: UUID().uuidString, checked: false, todo: "Take it to a person"),
+        ToDoItem(id: UUID().uuidString, checked: false, todo: "Fetch when they throw it")
+    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let addNewItemButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
         addNewItemButton.tintColor = .black
-        
-        if let savedData = defaults.array(forKey: "todoItems") as? [String] {
-            itemArray = savedData
-        } else {
-            itemArray = [String]()
-        }
         
         navigationItem.rightBarButtonItem = addNewItemButton
     }
@@ -35,7 +33,13 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = itemArray[indexPath.row].todo
+        
+        if itemArray[indexPath.row].checked {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         
         return cell
     }
@@ -45,6 +49,8 @@ class TodoListViewController: UITableViewController {
         guard let cell = tableView.cellForRow(at: indexPath) else { return }
         
         cell.accessoryType = cell.accessoryType == .none ? .checkmark : .none
+        
+        itemArray[indexPath.row].checked.toggle()
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -56,7 +62,10 @@ class TodoListViewController: UITableViewController {
         let submit = UIAlertAction(title: "Add", style: .default) { [weak self, weak ac] _ in
             if let input = ac?.textFields?.first?.text {
                 guard let self = self else { return }
-                self.itemArray.append(input)
+                
+                let newToDo = ToDoItem(id: UUID().uuidString, checked: false, todo: input)
+                
+                self.itemArray.append(newToDo)
                 
                 DispatchQueue.main.async {
                     let indexPath = IndexPath(row: self.itemArray.count - 1, section: 0)
