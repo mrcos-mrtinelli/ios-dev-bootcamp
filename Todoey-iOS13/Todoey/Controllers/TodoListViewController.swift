@@ -9,13 +9,10 @@
 import UIKit
 
 class TodoListViewController: UITableViewController {
-    let defaults = UserDefaults.standard
     
-    var itemArray = [
-        ToDoItem(id: UUID().uuidString, checked: false, todo: "Find cork"),
-        ToDoItem(id: UUID().uuidString, checked: false, todo: "Take it to a person"),
-        ToDoItem(id: UUID().uuidString, checked: false, todo: "Fetch when they throw it")
-    ]
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+    var itemArray = [ToDoItem]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,8 +21,9 @@ class TodoListViewController: UITableViewController {
         addNewItemButton.tintColor = .black
         
         navigationItem.rightBarButtonItem = addNewItemButton
+        
+        loadItems()
     }
-    
     //MARK: - TableView Datasource Functions
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
@@ -34,12 +32,7 @@ class TodoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
         cell.textLabel?.text = itemArray[indexPath.row].todo
-        
-        if itemArray[indexPath.row].checked {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        cell.accessoryType = itemArray[indexPath.row].checked ? .checkmark : .none
         
         return cell
     }
@@ -52,7 +45,9 @@ class TodoListViewController: UITableViewController {
         
         itemArray[indexPath.row].checked.toggle()
         
-        tableView.deselectRow(at: indexPath, animated: true)
+        if saveItems() {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
     
     //MARK: - Add new items
@@ -64,13 +59,16 @@ class TodoListViewController: UITableViewController {
                 guard let self = self else { return }
                 
                 let newToDo = ToDoItem(id: UUID().uuidString, checked: false, todo: input)
-                
+            
                 self.itemArray.append(newToDo)
+                
+                guard self.saveItems() else { return }
                 
                 DispatchQueue.main.async {
                     let indexPath = IndexPath(row: self.itemArray.count - 1, section: 0)
                     self.tableView.insertRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
                 }
+                
             }
         }
         
@@ -82,6 +80,30 @@ class TodoListViewController: UITableViewController {
         ac.addAction(submit)
         
         present(ac, animated: true)
+    }
+    
+    //MARK: - Model Updates
+    func saveItems() -> Bool {
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("error saving")
+            return false
+        }
+        return true
+    }
+    func loadItems() {
+        guard let data = try? Data(contentsOf: dataFilePath!) else { return }
+        
+        let decoder = PropertyListDecoder()
+        do {
+            itemArray = try decoder.decode([ToDoItem].self, from: data)
+        } catch {
+            print("error: \(error)")
+        }
     }
 }
 
