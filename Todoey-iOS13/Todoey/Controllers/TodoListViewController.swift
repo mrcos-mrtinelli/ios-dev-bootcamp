@@ -32,7 +32,7 @@ class TodoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
         cell.textLabel?.text = itemArray[indexPath.row].todo
-        cell.accessoryType = itemArray[indexPath.row].checked ? .checkmark : .none
+        cell.accessoryType = itemArray[indexPath.row].done ? .checkmark : .none
         
         return cell
     }
@@ -43,7 +43,7 @@ class TodoListViewController: UITableViewController {
         
         cell.accessoryType = cell.accessoryType == .none ? .checkmark : .none
         
-        itemArray[indexPath.row].checked.toggle()
+        itemArray[indexPath.row].done.toggle()
         
         if saveItems() {
             tableView.deselectRow(at: indexPath, animated: true)
@@ -58,7 +58,7 @@ class TodoListViewController: UITableViewController {
             if let input = ac?.textFields?.first?.text {
                 guard let self = self else { return }
                 
-                let newToDo = ToDoItem(id: UUID().uuidString, checked: false, todo: input)
+                let newToDo = ToDoItem(id: UUID().uuidString, done: false, todo: input)
             
                 self.itemArray.append(newToDo)
                 

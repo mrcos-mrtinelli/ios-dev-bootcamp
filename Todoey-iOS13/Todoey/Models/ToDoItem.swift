@@ -10,6 +10,6 @@ import Foundation
 
 struct ToDoItem: Codable {
     let id: String
-    var checked: Bool
+    var done: Bool
     var todo: String
 }
