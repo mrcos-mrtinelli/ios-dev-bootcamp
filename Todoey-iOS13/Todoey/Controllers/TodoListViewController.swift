@@ -101,6 +101,7 @@ class TodoListViewController: UITableViewController {
         
         do {
             itemArray = try context.fetch(request)
+            
         } catch {
             print("Error reading data from context: \(error)")
         }
