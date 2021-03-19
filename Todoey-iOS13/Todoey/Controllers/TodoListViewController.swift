@@ -17,6 +17,8 @@ class TodoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         let addNewItemButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
         addNewItemButton.tintColor = .black
         
@@ -96,15 +98,41 @@ class TodoListViewController: UITableViewController {
         }
         return true
     }
-    func loadItems() {
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-        
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         do {
             itemArray = try context.fetch(request)
-            
         } catch {
             print("Error reading data from context: \(error)")
         }
+        
+        tableView.reloadData()
     }
 }
 
+//MARK: - Search bar methods
+
+extension TodoListViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard searchBar.text != "" else { return }
+        /// create a request
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        /// query with NSPredicate
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        loadItems(with: request)
+    }
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        print("huehue")
+    }
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text == "" {
+            loadItems()
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+            
+        }
+    }
+}
