@@ -76,12 +76,8 @@ class TodoListViewController: UITableViewController {
                         print("Error saving item: \(error)")
                     }
                 }
+                self.loadItems()
 
-                DispatchQueue.main.async {
-                    guard let index = self.todoItems?.count else { return }
-                    let indexPath = IndexPath(row: index - 1, section: 0)
-                    self.tableView.insertRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
-                }
             }
         }
         
@@ -109,7 +105,7 @@ class TodoListViewController: UITableViewController {
 
 extension TodoListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "timestamp", ascending: true)
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "timestamp", ascending: false)
         tableView.reloadData()
     }
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
