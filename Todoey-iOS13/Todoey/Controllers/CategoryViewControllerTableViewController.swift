@@ -18,6 +18,8 @@ class CategoryViewControllerTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.rowHeight = 80.0
+        
         loadCategories()
     }
 
@@ -29,6 +31,8 @@ class CategoryViewControllerTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
+        
+        cell.delegate = self
         
         if let category = categories?[indexPath.row] {
             cell.textLabel?.text = category.name
@@ -96,5 +100,21 @@ class CategoryViewControllerTableViewController: UITableViewController {
         let indexPath = IndexPath(row: index - 1, section: 0)
         
         tableView.insertRows(at: [indexPath], with: .automatic)
+    }
+}
+
+//MARK: - Extension
+extension CategoryViewControllerTableViewController: SwipeTableViewCellDelegate {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            // handle action by updating model with deletion
+            print("delete, by SwipeKit")
+        }
+        
+        // customize the action appearance
+        deleteAction.image = UIImage(named: "trash-icon")
+        
+        return [deleteAction]
     }
 }
