@@ -8,9 +8,8 @@
 
 import UIKit
 import RealmSwift
-import SwipeCellKit
 
-class CategoryViewControllerTableViewController: UITableViewController {
+class CategoryViewControllerTableViewController: SwipeTableViewController {
     let realm = try! Realm()
     
     var categories: Results<Category>?
@@ -30,13 +29,9 @@ class CategoryViewControllerTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        cell.delegate = self
-        
-        if let category = categories?[indexPath.row] {
-            cell.textLabel?.text = category.name
-        }
+        cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories found."
 
         return cell
     }
@@ -98,23 +93,21 @@ class CategoryViewControllerTableViewController: UITableViewController {
         
         guard let index = categories?.count else { return }
         let indexPath = IndexPath(row: index - 1, section: 0)
-        
+
         tableView.insertRows(at: [indexPath], with: .automatic)
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let itemToDelete = self.categories?[indexPath.row] {
+            
+            do {
+                try self.realm.write {
+                    self.realm.delete(itemToDelete)
+                }
+            } catch  {
+                print("an error occurred when deleting: \(error)")
+            }
+        }
     }
 }
 
-//MARK: - Extension
-extension CategoryViewControllerTableViewController: SwipeTableViewCellDelegate {
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-        
-        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            // handle action by updating model with deletion
-            print("delete, by SwipeKit")
-        }
-        
-        // customize the action appearance
-        deleteAction.image = UIImage(named: "trash-icon")
-        
-        return [deleteAction]
-    }
-}
