@@ -8,8 +8,11 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
+    @IBOutlet var searchBar: UISearchBar!
+    
     let realm = try! Realm()
     var todoItems: Results<Item>?
     var selectedCategory: Category? {
@@ -26,6 +29,21 @@ class TodoListViewController: SwipeTableViewController {
         
         navigationItem.rightBarButtonItem = addNewItemButton
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        title = selectedCategory?.name
+        
+        guard let navBar = navigationController?.navigationBar else { return }
+        guard let navBarColor = UIColor(hexString: selectedCategory!.color) else { return }
+        
+        navBar.backgroundColor = navBarColor
+        navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+        navBar.largeTitleTextAttributes = [.foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)]
+        
+        searchBar.barTintColor = navBarColor
+        
+    }
     //MARK: - TableView Datasource Functions
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todoItems?.count ?? 1
@@ -33,8 +51,10 @@ class TodoListViewController: SwipeTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        if let item = todoItems?[indexPath.row] {
+        if let item = todoItems?[indexPath.row], let color = UIColor(hexString: selectedCategory?.color ?? "0096FF") {
             cell.textLabel?.text = item.title
+            cell.backgroundColor = color.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count))
+            cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
             cell.accessoryType = item.done ? .checkmark : .none
         }
         

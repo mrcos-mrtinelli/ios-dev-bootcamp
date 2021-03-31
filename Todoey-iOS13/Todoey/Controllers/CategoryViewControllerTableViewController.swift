@@ -20,6 +20,13 @@ class CategoryViewControllerTableViewController: SwipeTableViewController {
         
         loadCategories()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        guard let navBar = navigationController?.navigationBar else { return }
+        
+        navBar.backgroundColor = UIColor(hexString: "0096FF")
+    }
 
     // MARK: - Table view data source
 
@@ -30,9 +37,10 @@ class CategoryViewControllerTableViewController: SwipeTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        if let cellContent = categories?[indexPath.row] {
+        if let cellContent = categories?[indexPath.row], let color = UIColor(hexString: cellContent.color) {
             cell.textLabel?.text = cellContent.name
-            cell.backgroundColor = UIColor(hexString: cellContent.backgroundColor)
+            cell.backgroundColor = color
+            cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
             
         } else {
             cell.textLabel?.text = "No categories found."
@@ -66,7 +74,7 @@ class CategoryViewControllerTableViewController: SwipeTableViewController {
                 
                 let newCategory = Category()
                 newCategory.name = categoryName
-                newCategory.backgroundColor = UIColor.randomFlat().hexValue()
+                newCategory.color = UIColor.randomFlat().hexValue()
                 
                 self.saveCategories(category: newCategory)
             }
