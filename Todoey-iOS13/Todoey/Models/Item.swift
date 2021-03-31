@@ -10,8 +10,8 @@ import Foundation
 import RealmSwift
 
 class Item: Object {
-    @objc dynamic var title = ""
-    @objc dynamic var done = false
-    @objc dynamic var timestamp = Date()
+    @objc dynamic var title: String = ""
+    @objc dynamic var done: Bool = false
+    @objc dynamic var timestamp: Date = Date()
     let parentCategory = LinkingObjects(fromType: Category.self, property: "items")
 }
