@@ -11,6 +11,8 @@ import StoreKit
 
 class QuoteTableViewController: UITableViewController {
     
+    let productID = "com.someapp.name.product"
+    
     var quotesToShow = [
         "Our greatest glory is not in never falling, but in rising every time we fall. — Confucius",
         "All our dreams can come true, if we have the courage to pursue them. – Walt Disney",
@@ -33,11 +35,20 @@ class QuoteTableViewController: UITableViewController {
         super.viewDidLoad()
         
         SKPaymentQueue.default().add(self)
+        
+        if isPurchased() {
+            showPremiumQuotes()
+        }
     }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if isPurchased() {
+            return quotesToShow.count
+        }
+        
         return quotesToShow.count + 1
     }
 
@@ -47,7 +58,9 @@ class QuoteTableViewController: UITableViewController {
 
         if indexPath.row < quotesToShow.count {
             cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.text = quotesToShow[indexPath.row]
+            cell.textLabel?.textColor = UIColor.black
+            cell.accessoryType = .none
+            cell.textLabel?.text = quotesToShow[indexPath.row]
             
         } else {
             cell.textLabel?.text = "Want more quotes? Click here!"
@@ -71,16 +84,31 @@ class QuoteTableViewController: UITableViewController {
     func buyPremiumQuotes() {
         if SKPaymentQueue.canMakePayments() {
             let paymentRequest = SKMutablePayment()
-            paymentRequest.productIdentifier = ""
+            paymentRequest.productIdentifier = productID
             SKPaymentQueue.default().add(paymentRequest)
             
         } else {
             print("User is not able to make payments")
         }
     }
+    func showPremiumQuotes() {
+        quotesToShow.append(contentsOf: premiumQuotes)
+        tableView.reloadData()
+    }
+    
+    func isPurchased() -> Bool {
+        let purchasedStatus = UserDefaults.standard.bool(forKey: productID)
+        
+        if purchasedStatus {
+            navigationItem.setRightBarButton(nil, animated: true)
+            return true
+        } else {
+            return false
+        }
+    }
     
     @IBAction func restorePressed(_ sender: UIBarButtonItem) {
-        
+        SKPaymentQueue.default().restoreCompletedTransactions()
     }
 }
 
@@ -89,9 +117,14 @@ class QuoteTableViewController: UITableViewController {
 extension QuoteTableViewController: SKPaymentTransactionObserver {
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {
-            if transaction.transactionState == .purchased {
+            if transaction.transactionState == .purchased || transaction.transactionState == .restored {
+                
+                UserDefaults.standard.set(true, forKey: productID)
+                
+                showPremiumQuotes()
                 
                 SKPaymentQueue.default().finishTransaction(transaction)
+                
                 
             } else if transaction.transactionState == .failed {
                 
