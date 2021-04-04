@@ -12,18 +12,30 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
     
+    // private to current scope 
+    private var isDoneTyping: Bool = true
+    
     
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
+//        guard let buttonTapped = sender.currentTitle else { return }
         
-        //What should happen when a non-number button is pressed
+        isDoneTyping.toggle()
     
     }
 
     
     @IBAction func numButtonPressed(_ sender: UIButton) {
         
-        //What should happen when a number is entered into the keypad
+        if let numberTapped = sender.currentTitle {
+            
+            if isDoneTyping {
+                displayLabel.text = numberTapped
+                isDoneTyping.toggle()
+            } else {
+                displayLabel.text! += numberTapped
+            }
+        }
     
     }
 
