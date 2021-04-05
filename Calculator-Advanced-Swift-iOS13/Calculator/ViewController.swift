@@ -15,10 +15,33 @@ class ViewController: UIViewController {
     // private to current scope 
     private var isDoneTyping: Bool = true
     
+    private var displayValue: Double {
+        get {
+            // force unwrapping because the display will always contain text
+            guard let number = Double(displayLabel.text!) else { fatalError("Unable to covert display to double" ) }
+            return number
+        }
+        set {
+            displayLabel.text = String(newValue)
+        }
+    }
+    
     
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
-//        guard let buttonTapped = sender.currentTitle else { return }
+        
+        if let calcMethod = sender.currentTitle {
+            switch calcMethod {
+            case "+/-":
+                displayValue *= -1
+                
+            case "%":
+               displayValue /= 100
+                
+            default:
+                displayValue = 0
+            }
+        }
         
         isDoneTyping.toggle()
     
@@ -33,6 +56,19 @@ class ViewController: UIViewController {
                 displayLabel.text = numberTapped
                 isDoneTyping.toggle()
             } else {
+                
+                if numberTapped == "." {
+                    
+                    guard let currentValue = Double(displayLabel.text!) else { fatalError("Unable to convert num to double" ) }
+                    
+                    let isInt = floor(currentValue) == currentValue
+                    
+                    if !isInt {
+                        return
+                    }
+                    
+                }
+                
                 displayLabel.text! += numberTapped
             }
         }
