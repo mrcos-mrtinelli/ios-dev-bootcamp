@@ -12,7 +12,9 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
     
-    // private to current scope 
+    // private to current scope
+    private let calcManager = CalculatorManager()
+    
     private var isDoneTyping: Bool = true
     
     private var displayValue: Double {
@@ -30,18 +32,9 @@ class ViewController: UIViewController {
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
-        if let calcMethod = sender.currentTitle {
-            switch calcMethod {
-            case "+/-":
-                displayValue *= -1
-                
-            case "%":
-               displayValue /= 100
-                
-            default:
-                displayValue = 0
-            }
-        }
+        guard let button = sender.currentTitle else { fatalError("button not found") }
+        
+        displayValue = calcManager.calculate(symbol: button, value: displayValue)
         
         isDoneTyping.toggle()
     
