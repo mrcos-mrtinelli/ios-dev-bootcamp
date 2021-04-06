@@ -13,8 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var displayLabel: UILabel!
     
     // private to current scope
-    private let calcManager = CalculatorManager()
-    
+    private var calculator = CalculatorManager()
     private var isDoneTyping: Bool = true
     
     private var displayValue: Double {
@@ -32,9 +31,13 @@ class ViewController: UIViewController {
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
+        calculator.setNumber(displayValue)
+        
         guard let button = sender.currentTitle else { fatalError("button not found") }
         
-        displayValue = calcManager.calculate(symbol: button, value: displayValue)
+        if let result = calculator.calculate(symbol: button) {
+            displayValue = result
+        }
         
         isDoneTyping.toggle()
     
