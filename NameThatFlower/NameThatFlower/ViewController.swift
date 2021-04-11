@@ -8,16 +8,25 @@
 import UIKit
 import CoreML
 import Vision
-
+import Alamofire
+import SwiftyJSON
 
 class ViewController: UIViewController {
     
     @IBOutlet var imageView: UIImageView!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var descriptionLabel: UILabel!
+    
+    
     
     let imagePicker = UIImagePickerController()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        titleLabel.text = ""
+        descriptionLabel.text = ""
         
         let cameraBarButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(cameraTapped))
         
@@ -26,6 +35,7 @@ class ViewController: UIViewController {
         imagePicker.delegate = self
         imagePicker.sourceType = .photoLibrary
         imagePicker.allowsEditing = true
+        
     }
     
     //MARK: Navigation Bar
@@ -51,7 +61,10 @@ class ViewController: UIViewController {
             }
             
             if let firstResult = results.first {
-                self.title = firstResult.identifier.capitalized
+                let flowerName = firstResult.identifier.capitalized
+                self.title = flowerName
+                
+                self.getWikiFor(flowerName)
             }
         }
         
@@ -65,6 +78,42 @@ class ViewController: UIViewController {
             
         } catch  {
             fatalError("could not perform request")
+        }
+        
+    }
+    
+    func getWikiFor(_ flowerName: String) {
+        let wikipediaURl = "https://en.wikipedia.org/w/api.php"
+        
+        let parameters : [String:String] = [
+            "format" : "json",
+            "action" : "query",
+            "prop" : "extracts",
+            "exintro" : "",
+            "explaintext" : "",
+            "titles" : flowerName,
+            "indexpageids" : "",
+            "redirects" : "1",
+        ]
+        
+        Alamofire.request(wikipediaURl, parameters: parameters).responseJSON { response in
+            switch response.result {
+            case .success(let value):
+                let json = JSON(value)
+                
+                if let pageid = json["query"]["pageids"][0].string {
+                    let title = json["query"]["pages"][pageid]["title"].string
+                    let extract = json["query"]["pages"][pageid]["extract"].string
+                    
+                    self.titleLabel.text = title
+                    self.descriptionLabel.text = extract
+
+                }
+                
+                
+            case .failure(let error):
+                print(error)
+            }
         }
         
     }
