@@ -10,6 +10,7 @@ import CoreML
 import Vision
 import Alamofire
 import SwiftyJSON
+import SDWebImage
 
 class ViewController: UIViewController {
     
@@ -88,7 +89,8 @@ class ViewController: UIViewController {
         let parameters : [String:String] = [
             "format" : "json",
             "action" : "query",
-            "prop" : "extracts",
+            "prop" : "extracts|pageimages",
+            "pithumbsize": "500",
             "exintro" : "",
             "explaintext" : "",
             "titles" : flowerName,
@@ -100,16 +102,14 @@ class ViewController: UIViewController {
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
+                let pageid = json["query"]["pageids"][0].stringValue
+                let title = json["query"]["pages"][pageid]["title"].stringValue
+                let extract = json["query"]["pages"][pageid]["extract"].stringValue
+                let flowerImage = json["query"]["pages"][pageid]["thumbnail"]["source"].stringValue
                 
-                if let pageid = json["query"]["pageids"][0].string {
-                    let title = json["query"]["pages"][pageid]["title"].string
-                    let extract = json["query"]["pages"][pageid]["extract"].string
-                    
-                    self.titleLabel.text = title
-                    self.descriptionLabel.text = extract
-
-                }
-                
+                self.titleLabel.text = title
+                self.descriptionLabel.text = extract
+                self.imageView.sd_setImage(with: URL(string: flowerImage))
                 
             case .failure(let error):
                 print(error)
