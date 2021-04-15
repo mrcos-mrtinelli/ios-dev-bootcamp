@@ -8,6 +8,7 @@
 
 import UIKit
 import SwifteriOS
+import CoreML
 
 class ViewController: UIViewController {
     
@@ -15,10 +16,16 @@ class ViewController: UIViewController {
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sentimentLabel: UILabel!
     
-    let swifter = Swifter(consumerKey: "869xR38uJr7YL4k6Lt30Lb7bz", consumerSecret: "IgwMAri9VtbSSGDLqZSGPB7A8HG1Yna4Edg05eFXW8YMv4HwHJ")
+    let sentimentClassifier = try! TweetSentimentClassifier(configuration: MLModelConfiguration.init())
+    
+    let swifter = Swifter()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let sentiment = try! sentimentClassifier.prediction(text: "I love you!")
+        
+        print(sentiment.label)
         
         swifter.searchTweet(using: "@Apple", lang: "en", count: 100, tweetMode: .extended) { (results, metadata) in
             print("results: \(results)")
