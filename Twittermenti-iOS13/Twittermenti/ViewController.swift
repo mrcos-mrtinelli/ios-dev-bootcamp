@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var sentimentLabel: UILabel!
     
     let sentimentClassifier = try! TweetSentimentClassifier(configuration: MLModelConfiguration.init())
+    let tweetCount = 100
     
     let swifter = Swifter()
 
@@ -28,17 +29,17 @@ class ViewController: UIViewController {
 
     @IBAction func predictPressed(_ sender: Any) {
         
+        fetchTweets()
+        
+    }
+    func fetchTweets() {
         guard let searchText = textField.text else { return }
         
-        let negativeEmojis = ["🤨", "🤮", "🖕🏼"]
-        let neutralEmojis = ["🤔", "😐", "😴"]
-        let positiveEmojis = ["🤩", "🥰", "🥳"]
-        
-        swifter.searchTweet(using: searchText, lang: "en", count: 100, tweetMode: .extended) { (results, metadata) in
+        swifter.searchTweet(using: searchText, lang: "en", count: tweetCount, tweetMode: .extended) { (results, metadata) in
             
             var tweets = [TweetSentimentClassifierInput]()
             
-            for i in 0..<100 {
+            for i in 0..<self.tweetCount {
                 if let tweet = results[i]["full_text"].string {
                     
                     let tweetForClassification = TweetSentimentClassifierInput(text: tweet)
@@ -47,34 +48,43 @@ class ViewController: UIViewController {
                 }
             }
             
-            do {
-                let sentiments = try self.sentimentClassifier.predictions(inputs: tweets)
-                var sentimentScore = 0
-                
-                for s in sentiments {
-                    if s.label == "Pos" {
-                        sentimentScore += 1
-                    } else if s.label == "Neg" {
-                        sentimentScore -= 1
-                    }
-                }
-                
-                if sentimentScore > 0 {
-                    self.sentimentLabel.text = positiveEmojis.randomElement()
-                } else if sentimentScore < 0 {
-                    self.sentimentLabel.text = negativeEmojis.randomElement()
-                } else {
-                    self.sentimentLabel.text = neutralEmojis.randomElement()
-                }
-                
-            } catch {
-                print("an error has occurred.")
-            }
+            self.analyzeSentiment(tweets: tweets)
             
         } failure: { (error) in
             print("error: \(error)")
         }
+    }
+    func analyzeSentiment(tweets: [TweetSentimentClassifierInput]) {
+        do {
+            let sentiments = try self.sentimentClassifier.predictions(inputs: tweets)
+            var sentimentScore = 0
+            
+            for s in sentiments {
+                if s.label == "Pos" {
+                    sentimentScore += 1
+                } else if s.label == "Neg" {
+                    sentimentScore -= 1
+                }
+            }
+            
+            updateUI(score: sentimentScore)
+            
+        } catch {
+            print("an error has occurred.")
+        }
+    }
+    func updateUI(score: Int) {
+        let negativeEmojis = ["🤨", "🤮", "🖕🏼"]
+        let neutralEmojis = ["🤔", "😐", "😴"]
+        let positiveEmojis = ["🤩", "🥰", "🥳"]
         
+        if score > 0 {
+            self.sentimentLabel.text = positiveEmojis.randomElement()
+        } else if score < 0 {
+            self.sentimentLabel.text = negativeEmojis.randomElement()
+        } else {
+            self.sentimentLabel.text = neutralEmojis.randomElement()
+        }
     }
     
 }
