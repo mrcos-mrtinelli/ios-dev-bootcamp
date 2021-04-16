@@ -9,6 +9,7 @@
 import UIKit
 import SwifteriOS
 import CoreML
+import SwiftyJSON
 
 class ViewController: UIViewController {
     
@@ -23,23 +24,57 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let sentiment = try! sentimentClassifier.prediction(text: "I love you!")
+    }
+
+    @IBAction func predictPressed(_ sender: Any) {
         
-        print(sentiment.label)
+        guard let searchText = textField.text else { return }
         
-        swifter.searchTweet(using: "@Apple", lang: "en", count: 100, tweetMode: .extended) { (results, metadata) in
-            print("results: \(results)")
-            print("metadata: \(metadata)")
+        let negativeEmojis = ["🤨", "🤮", "🖕🏼"]
+        let neutralEmojis = ["🤔", "😐", "😴"]
+        let positiveEmojis = ["🤩", "🥰", "🥳"]
+        
+        swifter.searchTweet(using: searchText, lang: "en", count: 100, tweetMode: .extended) { (results, metadata) in
+            
+            var tweets = [TweetSentimentClassifierInput]()
+            
+            for i in 0..<100 {
+                if let tweet = results[i]["full_text"].string {
+                    
+                    let tweetForClassification = TweetSentimentClassifierInput(text: tweet)
+                    
+                    tweets.append(tweetForClassification)
+                }
+            }
+            
+            do {
+                let sentiments = try self.sentimentClassifier.predictions(inputs: tweets)
+                var sentimentScore = 0
+                
+                for s in sentiments {
+                    if s.label == "Pos" {
+                        sentimentScore += 1
+                    } else if s.label == "Neg" {
+                        sentimentScore -= 1
+                    }
+                }
+                
+                if sentimentScore > 0 {
+                    self.sentimentLabel.text = positiveEmojis.randomElement()
+                } else if sentimentScore < 0 {
+                    self.sentimentLabel.text = negativeEmojis.randomElement()
+                } else {
+                    self.sentimentLabel.text = neutralEmojis.randomElement()
+                }
+                
+            } catch {
+                print("an error has occurred.")
+            }
             
         } failure: { (error) in
             print("error: \(error)")
         }
-
-    }
-
-    @IBAction func predictPressed(_ sender: Any) {
-    
-    
+        
     }
     
 }
