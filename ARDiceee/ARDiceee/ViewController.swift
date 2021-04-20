@@ -115,6 +115,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
     }
     
+    @IBAction func removeAllDice(_ sender: Any) {
+        
+        if !diceArray.isEmpty {
+            for dice in diceArray {
+                dice.removeFromParentNode()
+            }
+        }
+    }
+    
+    
     func roll(_ diceNode: SCNNode) {
         
         let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
