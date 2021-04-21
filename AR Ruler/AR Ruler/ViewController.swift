@@ -13,6 +13,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
+    var dotNodesArray = [SCNNode]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -53,15 +55,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
+    // MARK: - Methods
+    
     func addDot(at location: ARHitTestResult) {
         let dot = SCNSphere()
         let dotMaterials = SCNMaterial()
         let dotNode = SCNNode()
         
-        dotMaterials.diffuse.contents = UIColor.red
-        
         dot.radius = 0.005
-        dot.materials = [dotMaterials]
         
         dotNode.geometry = dot
         dotNode.position = SCNVector3(
@@ -70,8 +71,42 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             z: Float(location.worldTransform.columns.3.z)
         )
         
+        if dotNodesArray.count == 2 {
+            for dot in dotNodesArray {
+                dot.removeFromParentNode()
+            }
+            
+            dotNodesArray.removeAll()
+        }
+        
+        if dotNodesArray.count == 0 {
+            dotMaterials.diffuse.contents = UIColor.green
+        } else if dotNodesArray.count == 1 {
+            dotMaterials.diffuse.contents = UIColor.red
+        }
+        
+        dot.materials = [dotMaterials]
+        
+        dotNodesArray.append(dotNode)
+        
         sceneView.scene.rootNode.addChildNode(dotNode)
+        
+        if dotNodesArray.count >= 2 {
+            calculate()
+        }
     }
-
-    // MARK: - ARSCNViewDelegate
+    
+    func calculate() {
+        guard let start = dotNodesArray.first,
+              let end = dotNodesArray.last else { return }
+        
+        let a = end.position.x - start.position.x,
+            b = end.position.y - start.position.y,
+            c = end.position.z - end.position.z
+        
+        let distance = sqrt(pow(a, 2) + pow(b, 2) + pow(c, 2))
+        
+        print("current distance = \(abs(distance))")
+        
+    }
 }
