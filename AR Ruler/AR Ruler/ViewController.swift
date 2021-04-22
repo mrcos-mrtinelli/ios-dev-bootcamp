@@ -18,8 +18,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
-        
         // Set the view's delegate
         sceneView.delegate = self
         
@@ -105,8 +103,30 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             c = end.position.z - end.position.z
         
         let distance = sqrt(pow(a, 2) + pow(b, 2) + pow(c, 2))
+        let distanceInInches = (distance * 100) / 2.54
+        let formattedInches = String(format: "%.2f in", distanceInInches)
         
-        print("current distance = \(abs(distance))")
+        showMeasurement(text: formattedInches, at: start.position)
         
+    }
+    
+    func showMeasurement(text: String, at location: SCNVector3) {
+        
+        let textGeo = SCNText(string: text, extrusionDepth: 1.0)
+        
+        textGeo.firstMaterial?.diffuse.contents = UIColor.red
+        
+        let textNode = SCNNode(geometry: textGeo)
+        
+        textNode.name = "textNode"
+        textNode.position = SCNVector3(x: location.x, y: location.y + 0.01, z: location.z)
+        textNode.scale = SCNVector3(x: 0.005, y: 0.005, z: 0.005)
+        
+        sceneView.scene.rootNode.childNodes
+            .filter({ $0.name == "textNode" })
+            .forEach({ $0.removeFromParentNode() })
+        
+        sceneView.scene.rootNode.addChildNode(textNode)
+                
     }
 }
